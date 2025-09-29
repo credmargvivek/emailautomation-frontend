@@ -46,7 +46,7 @@ function Navbar() {
   const navLinks = [
     { to: '/', label: 'Dashboard' },
     { to: '/home', label: 'Home' },
-    { to: '/history', label: 'History' },
+    { to: '/history', label: 'Email sent info' },
     { to: '/scrape', label: 'Scrape Management' },
     { to: '/emails', label: 'Email Management' },
     { to: '/send', label: 'Email Sending' },

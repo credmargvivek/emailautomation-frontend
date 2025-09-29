@@ -12,6 +12,8 @@ import Home from './pages/Home';
 import { UserProvider } from './context/UserContext';
 import GmailConnect from './pages/GmailConnect';
 import GmailWorkspaceConnect from './pages/GmailWorkspaceConnect';
+import EmailCountList from './pages/EmailCountList';
+
 
     // { to: '/oauth2/callback', label: 'Authorize your Email'}
 function App() {
@@ -28,6 +30,7 @@ function App() {
           <Route path="/home" element={<PrivateRoute><Home/></PrivateRoute>} />
           <Route path="/oauth2/callback" element={<PrivateRoute><GmailConnect/></PrivateRoute>}/>
           <Route path="/oauth2/Myapp/callback" element={<PrivateRoute><GmailWorkspaceConnect/></PrivateRoute>}/>
+          <Route path="/history" element={<PrivateRoute><EmailCountList/></PrivateRoute>}/>
         </Routes>
       </UserProvider>
       </BrowserRouter>

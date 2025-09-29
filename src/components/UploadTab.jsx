@@ -15,6 +15,7 @@ function UploadTab() {
   const [showCampaignListModal, setShowCampaignListModal] = useState(false);
   const [campaignList, setCampaignList] = useState([]);
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
+  const [loading,setLoading]= useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -26,9 +27,32 @@ function UploadTab() {
     }
   };
 
+
+    // Function to download sample CSV
+  const handleDownloadSampleCSV = () => {
+    const csvContent = `"firstName","lastName","domain","companyName","fullName","email","isVerified"
+"Vivek","Kushwaha","gmail.com","TechCorp","Vivek Kushwaha","vivkush734@gmail.com","false"
+"Vivek","Kushwaha","gmail.com","InnovateX","VivekKushwaha","vivekkushwaha734@gmail.com","false"
+"Kriti","Singh","gmail.com","DataSolutions","Kriti Singh","kritisingh3921@gmail.com","false"
+"Vivek","Kushwaha","gmail.com","CredMarg","Vivek Kushwaha","credmargvivek@gmail.com","false"
+"Vishal","Kushwaha","gmail.com","CredMarg","Vivek Kushwaha","rainav277@gmail.com","false"`;
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "sample.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
+
+
   const handlesend = async () => {
 
-    
+     alert("Sit tight, Mail sent Iniatiated. It will take a few minutes ...")
 
      try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/send-mail`, {
@@ -37,9 +61,7 @@ function UploadTab() {
           body: JSON.stringify({ 
             userId: user._id,
             campaignId: createdCampaignId, 
-            // subject: "Welcome to our campaign!",
-            // body: "Hello, this is a test email from the campaign system.",
-            fromEmail: "kay@ovam.dev"
+            fromEmail: "iram@ovam.dev"
           }),
           credentials: 'include'
         });
@@ -48,6 +70,7 @@ function UploadTab() {
 
         if (data.success) {
           // setFetchedCampaign(data.campaign);
+          alert("Mail sent processed");
         } else {
           alert("Failed to fetch campaign data: " + data.message);
         }
@@ -109,7 +132,7 @@ const handleUpload = async () => {
     alert("Please choose a CSV file and enter a campaign name.");
     return;
   }
-
+  setLoading(true);
   const formData = new FormData();
   formData.append("csv", selectedFile);
   formData.append("campaignName", campaignName);
@@ -163,6 +186,8 @@ const handleUpload = async () => {
   } catch (err) {
     console.error(err);
     alert("Error uploading campaign.");
+  }finally{
+    setLoading(false);
   }
 };
 
@@ -221,12 +246,12 @@ const handleUpload = async () => {
           Existing Campaign
         </button>
 
-         {/* <button
-          onClick={handlesend}
-          className={`px-6 py-3 rounded-lg text-lg font-medium transition-colors duration-200 bg-indigo-600 text-white`}
-         >
-          Send Mail
-        </button> */}
+         <button onClick={handleDownloadSampleCSV}
+        className="px-6 py-3 rounded-lg text-lg font-medium transition-colors duration-200 bg-gray-700 text-gray-300 hover:bg-indigo-600 hover:text-white"
+        >
+         Download Sample CSV
+         </button>
+        {/* create one more button */}
 
       </div>
 
@@ -286,8 +311,9 @@ const handleUpload = async () => {
                 className="mt-6 px-6 py-3 rounded-lg text-lg font-medium transition-colors duration-200 bg-indigo-600 text-white hover:bg-indigo-700"
               >
                 {campaignType === "new"
-                  ? "Upload & Create Campaign"
-                  : "Upload & Update Campaign"}
+                  ? loading===true?"Sit tight, uploading...":"Upload & Create Campaign"
+                  : loading===true?"Sit tight, updating...":"Upload & Update Campaign"
+                  }
               </button>
             )}
           </div>
@@ -301,7 +327,7 @@ const handleUpload = async () => {
           </h3>
           <button
           onClick={handlesend}
-          className={`px-6 py-3 rounded-lg text-lg font-medium transition-colors duration-200 bg-indigo-600 text-white`}
+          className={`px-6 py-3 rounded-lg text-lg font-medium transition-colors duration-200 bg-indigo-600 text-white cursor-pointer `}
         >
           Send Mail
         </button>
